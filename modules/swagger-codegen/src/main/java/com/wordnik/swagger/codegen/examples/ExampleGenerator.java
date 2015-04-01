@@ -43,7 +43,7 @@ public class ExampleGenerator {
           }
         }
         else if(property != null && mediaType.startsWith("application/xml")) {
-          String example = new XmlExampleGenerator(this.examples).toXml(property);
+          String example = null;//new XmlExampleGenerator(this.examples).toXml(property);
           if(example != null) {
             example = example.replaceAll("\n", "\\\\n");
             kv.put("example", example);
