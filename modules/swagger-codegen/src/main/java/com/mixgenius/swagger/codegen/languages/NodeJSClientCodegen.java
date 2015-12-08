@@ -3,7 +3,7 @@ package com.mixgenius.swagger.codegen.languages;
 import com.wordnik.swagger.codegen.languages.NodeJSServerCodegen;
 import com.wordnik.swagger.codegen.*;
 import com.wordnik.swagger.models.properties.*;
-
+import com.wordnik.swagger.models.*;
 import java.util.*;
 import java.io.File;
 
@@ -15,8 +15,6 @@ public class NodeJSClientCodegen extends NodeJSCustomCodegen {
     // Clean model templates, and add ours
     modelTemplateFiles.clear();
     modelTemplateFiles.put("model.mustache", ".js");
-    modelTemplateFiles.put("dtos.mustache", "DTO.js");
-    modelTemplateFiles.put("extensions.mustache", "Extension.js");
 
     // Clean api template, and add ours
     apiTemplateFiles.clear();
@@ -39,6 +37,21 @@ public class NodeJSClientCodegen extends NodeJSCustomCodegen {
 
   public CodegenType getTag() {
     return CodegenType.CLIENT;
+  }
+
+  @Override
+  public Map<String, Object> postProcessModels(Map<String, Object> objs) {
+    List<Object> models = (List<Object>) objs.get("models");
+    for (Object _mo : models) {
+        Map<String, Object> mo = (Map<String, Object>) _mo;
+        CodegenModel cm = (CodegenModel) mo.get("model");
+        for (CodegenProperty var : cm.vars) {
+            if(var.complexType != null && !var.complexType.isEmpty() && var.complexType != cm.classname) {
+              cm.complexTypes.add(var.complexType);
+            }
+        }
+    }
+    return objs;
   }
 
   @Override
